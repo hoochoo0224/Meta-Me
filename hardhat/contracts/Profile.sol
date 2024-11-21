@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.20;
 
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
+import { Initializable } from "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
-contract Profile {
+
+contract Profile is Initializable {
     struct ProfileData {
         string image;
         string name;
@@ -14,8 +16,8 @@ contract Profile {
 
     ProfileData profile;
 
-    constructor (string memory _image, string memory _name, string[] memory _interests, string[] memory _jobs) {
-        setProfile(_image, _name, _interests, _jobs);
+    function createProfile(string memory _image, string memory _name, string[] memory _interests, string[] memory _jobs) public initializer {
+        profile = ProfileData(_image, _name, _interests, _jobs);
     }
     
     function setProfile(string memory _image, string memory _name, string[] memory _interests, string[] memory _jobs) public {
