@@ -1,0 +1,84 @@
+$HEADER_HEIGHT: 60px;
+$FOOTER_HEIGHT: 60px;
+$NAV_HEIGHT: 60px;
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 100vh;
+    padding: 16px;
+
+    row-gap: 24px;
+
+    &_logo {
+        position: absolute;
+        margin: 8px;
+        top: 0;
+        left: 0;
+        width: 25px;
+        height: 25px;
+    }
+
+    &_title {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin-top: 9px;
+        margin-left: 38px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    &_middle {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        row-gap: 16px;
+
+        &_download {
+            width: 90%;
+            max-width: 320px;
+            padding: 12px 20px;
+            font-size: 0.9rem;
+            border-radius: 10px;
+            
+            @media (hover: none) {
+                &:hover {
+                    transform: none;
+                    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+                    background-color: #4a90e2;
+                }
+            }
+        }
+    }
+
+    &_top {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        
+        &_download {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            
+            img {
+                width: 20px;
+                height: 20px;
+            }
+            
+            &:hover {
+                opacity: 0.7;
+            }
+        }
+    }
+}
