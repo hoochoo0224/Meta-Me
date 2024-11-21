@@ -1,9 +1,9 @@
 import styles from './styles/index.module.scss'
 import { useRef, useCallback } from 'react'
 import { toPng } from 'html-to-image';
-import { Link } from 'react-router-dom';
 import ProfileCard from './components/ProfileCard'
 import CommonFooter from '@/components/common/footer/CommonFooter';
+import CommonHeader from '@/components/common/header/CommonHeader';
 
 function index() {
   const profileImage = localStorage.getItem('profileImage') || '/src/assets/images/image.png';
@@ -33,17 +33,16 @@ function index() {
 
   return (
     <div className={styles.container}>
-      <img src="/src/assets/icons/hive-brands-solid.svg" alt="" className={styles.container_logo} />
-      <span className={styles.container_title}>Meta Me</span>
-      <div className={styles.container_top}>
-        <button onClick={onButtonClick} className={styles.container_top_download}>
-          <img src="/src/assets/icons/download-solid.svg" alt="다운로드" />
-        </button>
-      </div>
+      <CommonHeader />
       <div className={styles.container_middle}>
         <ProfileCard ref={profileCardRef} profileImage={profileImage} username={username} interests={interests} jobs={jobs} />
       </div>
-      <CommonFooter />
+      <div className={styles.container_bottom}>
+        <button onClick={onButtonClick} className={styles.container_bottom_download}>
+          <img src="/src/assets/icons/download-solid.svg" alt="다운로드" />
+        </button>
+      </div>
+      <CommonFooter activePage="index" />
     </div>
   )
 }

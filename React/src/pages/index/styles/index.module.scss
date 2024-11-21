@@ -6,32 +6,13 @@ $NAV_HEIGHT: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 
     min-height: 100vh;
-    padding: 16px;
+    padding: 16px 14px;
+    margin: 0;
 
     row-gap: 24px;
-
-    &_logo {
-        position: absolute;
-        margin: 8px;
-        top: 0;
-        left: 0;
-        width: 25px;
-        height: 25px;
-    }
-
-    &_title {
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin-top: 9px;
-        margin-left: 38px;
-        font-family: 'Noto Sans KR', sans-serif;
-        font-size: 16px;
-        font-weight: 700;
-    }
 
     &_middle {
         width: 100%;
@@ -59,7 +40,7 @@ $NAV_HEIGHT: 60px;
         }
     }
 
-    &_top {
+    &_bottom {
         width: 100%;
         display: flex;
         justify-content: flex-end;
@@ -68,15 +49,14 @@ $NAV_HEIGHT: 60px;
         &_download {
             background: none;
             border: none;
-            cursor: pointer;
-            padding: 4px;
+            padding: 8px;
             
             img {
-                width: 20px;
-                height: 20px;
+                width: 24px;
+                height: 24px;
             }
             
-            &:hover {
+            &:active {
                 opacity: 0.7;
             }
         }

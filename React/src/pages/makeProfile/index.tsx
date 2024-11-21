@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import styles from "./styles/index.module.scss";
 import { Link } from "react-router-dom";
 import CommonFooter from "@/components/common/footer/CommonFooter";
+import CommonHeader from "@/components/common/header/CommonHeader";
 
 const MakeProfile = () => {
   // 프로필 이미지
@@ -63,6 +64,7 @@ const MakeProfile = () => {
 
   return (
     <div className={styles.container}>
+      <CommonHeader />
       <div className={styles.profile}>
         <div className={styles.profile_image_container} onClick={() => fileInputRef.current?.click()}>
           <input 
@@ -94,10 +96,14 @@ const MakeProfile = () => {
                     value={interest}
                     onChange={(e) => handleListChange(index, e.target.value, 'interests', interests, setInterests)}
                   />
-                  <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, 'interests', interests, setInterests)}>x</button>
+                  <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, 'interests', interests, setInterests)}>
+                    <img src="/src/assets/icons/minus-solid.svg" alt="삭제" className={styles.profile_info_list_list_item_container_delete_button_image} />
+                  </button>
                 </div>
               ))}
-              <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd(interests, setInterests, 'interests')}>+</button>
+              <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd(interests, setInterests, 'interests')} disabled={interests.length >= 5}>
+                <img src="/src/assets/icons/plus-solid.svg" alt="추가" className={styles.profile_info_list_list_add_button_image + (interests.length >= 5 ? " " + styles.profile_info_list_list_add_button_image_disabled : "")} />
+              </button>
             </div>
           </div>
 
@@ -108,16 +114,20 @@ const MakeProfile = () => {
               {jobs.map((job, index) => (
                 <div className={styles.profile_info_list_list_item_container} key={index}>
                   <input type="text" className={styles.profile_info_list_list_item_container_item} value={job} onChange={(e) => handleListChange(index, e.target.value, 'jobs', jobs, setJobs)} />
-                  <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, 'jobs', jobs, setJobs)}>x</button>
+                  <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, 'jobs', jobs, setJobs)}>
+                    <img src="/src/assets/icons/minus-solid.svg" alt="삭제" className={styles.profile_info_list_list_item_container_delete_button_image} />
+                  </button>
                 </div>
               ))}
-              <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd(jobs, setJobs, 'jobs')}>+</button>
+              <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd(jobs, setJobs, 'jobs')} disabled={jobs.length >= 3}>
+                <img src="/src/assets/icons/plus-solid.svg" alt="추가" className={styles.profile_info_list_list_add_button_image + (jobs.length >= 3 ? " " + styles.profile_info_list_list_add_button_image_disabled : "")} />
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <Link to="/">저장</Link>
-      <CommonFooter />
+      <Link to="/" className={styles.container_save_button}>저장</Link>
+      <CommonFooter activePage="make-profile" />
     </div>
   );
 };
