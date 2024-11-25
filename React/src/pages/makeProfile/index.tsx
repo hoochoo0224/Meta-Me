@@ -218,7 +218,7 @@ const MakeProfile = () => {
           <Link to="/create-profile" className={styles.container_middle_link}>프로필 만들러 가기</Link>
         </div>
       )}
-      {account || !isLoading || hasProfile ?
+      {!(!account || isLoading || !hasProfile) ?
         <CommonFooter activePage="make-profile" />
       : null}
     </div>

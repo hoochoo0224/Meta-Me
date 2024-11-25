@@ -101,7 +101,13 @@ export const setProfile = async (account: any, file: File, name: string, interes
 
 export const deleteProfile = async (account: any) => {
     try {
-        const result = await contract.methods.deleteNFT().send({ from: account });
+        const gasEstimate = await contract.methods.deleteNFT().estimateGas({ from: account });
+        const gasPrice = await web3.eth.getGasPrice();
+        const result = await contract.methods.deleteNFT().send({ 
+            from: account,
+            gas: Math.floor(Number(gasEstimate) * 1.2),
+            gasPrice: gasPrice
+        });
         return result;
     } catch (error: any) {
         console.error('deleteProfile:', error);

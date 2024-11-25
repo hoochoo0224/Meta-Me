@@ -59,7 +59,7 @@ function index() {
           </div>
         </>
       )}
-      {account || hasProfile ?
+      {!(!account || !hasProfile) ?
         <CommonFooter activePage="index" />
       : null}
     </div>

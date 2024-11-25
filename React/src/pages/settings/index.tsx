@@ -10,6 +10,7 @@ export default function SettingsPage() {
   const [tokenId, setTokenId] = useState<string>('');
   const [account, setAccount] = useState<string | null>(null);
   const [hasProfile, setHasProfile] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     try {
@@ -53,11 +54,14 @@ export default function SettingsPage() {
   const handleDeleteProfile = async () => {
     if (account && hasProfile) {
       try {
+        setIsLoading(true);
         await deleteProfile(account);
         setHasProfile(false);
         setTokenId('');
       } catch (error) {
         console.error('프로필 삭제 중 오류:', error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -76,8 +80,9 @@ export default function SettingsPage() {
                     <button 
                         className={`${styles.container_button} ${styles.container_button_delete}`}
                         onClick={handleDeleteProfile}
+                        disabled={isLoading}
                     >
-                        프로필 삭제
+                        {isLoading ? '삭제 중...' : '프로필 삭제'}
                     </button>
                 </>
             ) : (
@@ -86,7 +91,7 @@ export default function SettingsPage() {
                     <Link to="/create-profile" className={styles.container_middle_link}>프로필 만들러 가기</Link>
                 </div>
             )}
-            {account || hasProfile ? <CommonFooter activePage="settings" /> : null}
+            {!(!account || !hasProfile || isLoading) ? <CommonFooter activePage="settings" /> : null}
         </div>
     );
 }
