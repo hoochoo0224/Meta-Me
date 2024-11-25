@@ -62,7 +62,6 @@ export const createProfile = async (account: any, file: File, name: string, inte
         }
 
         const uri = await uploadToPinata(file, name, interests, jobs, other);
-        console.log('IPFS URI:', uri);
 
         const gasEstimate = await contract.methods.mint(uri).estimateGas({ from: account });
         const gasPrice = await web3.eth.getGasPrice();

@@ -74,19 +74,19 @@ const MakeProfile = () => {
     setUsername(validatedUsername);
   };
 
-  const handleListChange = (index: number, value: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
+  const handleListChange = (type, index: number, value: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
     const newList = [...list];
     newList[index] = value.replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎ]/g, '');
     setList(newList);
   };
 
-  const handleListDelete = (index: number, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
+  const handleListDelete = (type, index: number, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
     const newList = [...list];
     newList.splice(index, 1);
     setList(newList);
   };
 
-  const handleListAdd = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
+  const handleListAdd = (type, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
     const newList = [...list, "new"];
     setList(newList);
   };
