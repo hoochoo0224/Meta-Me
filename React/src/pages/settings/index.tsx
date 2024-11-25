@@ -26,7 +26,7 @@ export default function SettingsPage() {
       if (account) {
         try {
           const result = await isProfileCreated(account);
-          setHasProfile(result);
+          setHasProfile(Boolean(result));
         } catch (error: any) {
           console.error('프로필 확인 중 오류:', error);
         }
@@ -41,7 +41,7 @@ export default function SettingsPage() {
       if (account && hasProfile) {
         try {
           const result = await getTokenId(account);
-          setTokenId(result.toString());
+          setTokenId(Boolean(result).toString());
         } catch (error) {
           console.error('토큰 ID 가져오기 실패:', error);
         }

@@ -67,8 +67,8 @@ export const createProfile = async (account: any, file: File, name: string, inte
         const gasPrice = await web3.eth.getGasPrice();
         const result = await contract.methods.mint(uri).send({ 
             from: account,
-            gas: Math.floor(Number(gasEstimate) * 1.2),
-            gasPrice: gasPrice
+            gas: Math.floor(Number(gasEstimate) * 1.2).toString(),
+            gasPrice: gasPrice.toString()
         });
 
         return result;
@@ -89,8 +89,8 @@ export const setProfile = async (account: any, file: File, name: string, interes
         const gasPrice = await web3.eth.getGasPrice();
         const result = await contract.methods.setNFT(uri).send({ 
             from: account,
-            gas: Math.floor(Number(gasEstimate) * 1.2),
-            gasPrice: gasPrice
+            gas: Math.floor(Number(gasEstimate) * 1.2).toString(),
+            gasPrice: gasPrice.toString()
         });
         return result;
     } catch (error: any) {
@@ -105,8 +105,8 @@ export const deleteProfile = async (account: any) => {
         const gasPrice = await web3.eth.getGasPrice();
         const result = await contract.methods.deleteNFT().send({ 
             from: account,
-            gas: Math.floor(Number(gasEstimate) * 1.2),
-            gasPrice: gasPrice
+            gas: Math.floor(Number(gasEstimate) * 1.2).toString(),
+            gasPrice: gasPrice.toString()
         });
         return result;
     } catch (error: any) {

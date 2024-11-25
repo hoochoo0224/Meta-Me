@@ -20,7 +20,7 @@ const MakeProfile = () => {
       if (account) {
         try {
           const result = await isProfileCreated(account);
-          setHasProfile(result);
+          setHasProfile(Boolean(result));
           console.log(hasProfile);
           console.log(account);
         } catch (error: any) {
@@ -74,19 +74,19 @@ const MakeProfile = () => {
     setUsername(validatedUsername);
   };
 
-  const handleListChange = (type, index: number, value: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
+  const handleListChange = (index: number, value: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
     const newList = [...list];
     newList[index] = value.replace(/[^a-zA-Z0-9가-힣ㄱ-ㅎ]/g, '');
     setList(newList);
   };
 
-  const handleListDelete = (type, index: number, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
+  const handleListDelete = (index: number, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
     const newList = [...list];
     newList.splice(index, 1);
     setList(newList);
   };
 
-  const handleListAdd = (type, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
+  const handleListAdd = (list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
     const newList = [...list, "new"];
     setList(newList);
   };
@@ -164,14 +164,14 @@ const MakeProfile = () => {
                       type="text"
                       className={styles.profile_info_list_list_item_container_item}
                       value={interest}
-                      onChange={(e) => handleListChange(index, e.target.value, 'interests', interests, setInterests)}
+                      onChange={(e) => handleListChange(index, e.target.value, interests, setInterests)}
                     />
-                    <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, 'interests', interests, setInterests)}>
+                    <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, interests, setInterests)}>
                       <img src="/src/assets/icons/minus-solid.svg" alt="삭제" className={styles.profile_info_list_list_item_container_delete_button_image} />
                     </button>
                   </div>
                 ))}
-                <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd('interests', interests, setInterests)} disabled={interests.length >= 7}>
+                <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd(interests, setInterests)} disabled={interests.length >= 7}>
                   <img src="/src/assets/icons/plus-solid.svg" alt="추가" className={styles.profile_info_list_list_add_button_image + (interests.length >= 7 ? " " + styles.profile_info_list_list_add_button_image_disabled : "")} />
                 </button>
               </div>
@@ -183,13 +183,13 @@ const MakeProfile = () => {
               <div className={styles.profile_info_list_list}>
                 {jobs.map((job, index) => (
                   <div className={styles.profile_info_list_list_item_container} key={index}>
-                    <input type="text" className={styles.profile_info_list_list_item_container_item} value={job} onChange={(e) => handleListChange(index, e.target.value, 'jobs', jobs, setJobs)} />
-                    <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, 'jobs', jobs, setJobs)}>
+                    <input type="text" className={styles.profile_info_list_list_item_container_item} value={job} onChange={(e) => handleListChange(index, e.target.value, jobs, setJobs)} />
+                    <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, jobs, setJobs)}>
                       <img src="/src/assets/icons/minus-solid.svg" alt="삭제" className={styles.profile_info_list_list_item_container_delete_button_image} />
                     </button>
                   </div>
                 ))}
-                <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd('jobs', jobs, setJobs)} disabled={jobs.length >= 3}>
+                <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd(jobs, setJobs)} disabled={jobs.length >= 3}>
                   <img src="/src/assets/icons/plus-solid.svg" alt="추가" className={styles.profile_info_list_list_add_button_image + (jobs.length >= 3 ? " " + styles.profile_info_list_list_add_button_image_disabled : "")} />
                 </button>
               </div>

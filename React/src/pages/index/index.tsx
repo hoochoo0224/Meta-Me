@@ -23,7 +23,7 @@ function index() {
       if (account) {
         try {
           const result = await isProfileCreated(account);
-          setHasProfile(result);
+          setHasProfile(Boolean(result));
         } catch (error: any) {
           console.error(error);
         }
