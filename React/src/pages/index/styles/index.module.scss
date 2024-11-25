@@ -23,6 +23,13 @@ $NAV_HEIGHT: 60px;
 
         row-gap: 16px;
 
+        &_text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.2;
+        }
+
         &_download {
             width: 90%;
             max-width: 320px;
@@ -37,6 +44,11 @@ $NAV_HEIGHT: 60px;
                     background-color: #4a90e2;
                 }
             }
+        }
+        > div {
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
     }
 
