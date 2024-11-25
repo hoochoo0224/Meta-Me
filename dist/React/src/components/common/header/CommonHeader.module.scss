@@ -1,0 +1,23 @@
+.header {
+    height: 40px;
+
+    &_logo {
+        position: absolute;
+        margin: 8px;
+        top: 0;
+        left: 0;
+        width: 25px;
+        height: 25px;
+    }
+
+    &_title {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin-top: 9px;
+        margin-left: 38px;
+        font-family: 'Noto Sans KR', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+    }
+}
