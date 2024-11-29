@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import styles from './DownloadButton.module.scss'
 import { toPng } from 'html-to-image';
+import downloadIcon from '/src/assets/icons/download-solid.svg'
 
 function DownloadButton(props) {
   const onButtonClick = useCallback(() => {
@@ -22,7 +23,7 @@ function DownloadButton(props) {
   
   return (
     <button onClick={onButtonClick} className={styles.download_button}>
-        <img src="/src/assets/icons/download-solid.svg" alt="다운로드" />
+        <img src={downloadIcon} alt="다운로드" />
     </button>
   )
 }

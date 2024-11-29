@@ -1,12 +1,54 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { fileURLToPath } from 'url'
+// import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  // base: '/',
-  base: '/Meta-Me/React/',
+  plugins: [react()
+    // VitePWA({
+    //   workbox: {
+    //     maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB로 제한 증가
+    //   },
+    //   registerType: 'autoUpdate',
+    //   devOptions: {enabled: true},
+    //   includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
+    //   manifest: {
+    //     name: 'Meta Me',
+    //     short_name: 'Meta Me',
+    //     theme_color: '#ffffff',
+    //     lang: 'ko',
+    //     icons: [
+    //         {
+    //             src: 'pwa-64x64.png',
+    //             sizes: '64x64',
+    //             type: 'image/png'
+    //         },
+    //         {
+    //             src: 'pwa-192x192.png',
+    //             sizes: '192x192',
+    //             type: 'image/png'
+    //         },
+    //         {
+    //             src: 'pwa-512x512.png',
+    //             sizes: '512x512',
+    //             type: 'image/png',
+    //             purpose: 'any'
+    //         },
+    //         {
+    //             src: 'maskable-icon-512x512.png',
+    //             sizes: '512x512',
+    //             type: 'image/png',
+    //             purpose: 'maskable'
+    //         }
+    //     ],
+    //   }, 
+    // })
+  
+  ],
+
+  base: '/',
+  // base: '/Meta-Me/React/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),

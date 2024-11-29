@@ -1,187 +1,149 @@
-import { Web3 } from 'web3'
+export const contractAddress = '0x59651fE3e72ADa6Ce1ba633A20f83d058e3350E7';
 
-function uploadToPinata(file: File, name: string, interests: string, jobs: string, other: Array<{}>) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('name', name);
-    formData.append('interests', interests);
-    formData.append('jobs', jobs);
-    formData.append('other', JSON.stringify(other));
-    
-    return fetch('http://localhost:3001/api/upload-to-pinata', {
-        method: 'POST',
-        body: formData
-    })
-    .then(async response => {
-        const text = await response.text();
-        
-        if (!response.ok) {
-            throw new Error(`Upload response not ok: ${text}`);
-        }
-        
-        return JSON.parse(text);
-    })
-    .then(data => {
-        return data.uri;
-    });
-}
+const API_BASE_URL = 'https://port-0-meta-me-api-m3x1zrsv043003ce.sel4.cloudtype.app';
 
-// MakeNFT Contract
-import _abi from '../../../hardhat/artifacts/contracts/MakeNFT.sol/MakeNFT.json' assert { type: "json" };
-export const abi = _abi.abi;
-export const contractAddress = '0x4aBCCc507c01EAbe93c6748ae8E3AEc6c087325C';
-
-export const web3 = new Web3(window.ethereum);
-export const contract = new web3.eth.Contract(abi, contractAddress);
-
-export const createProfile = async (account: any, file: File, name: string, interests: string, jobs: string, other: Array<{}>) => {
+export const createProfile = async (account: string, file: File, name: string, interests: string[], jobs: string[], other: any[]): Promise<any> => {
     try {
-        const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-        if (chainId !== '0x98a') {  // Polygon zkEVM testnet
-            try {
-                await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x98a' }] });
-            } catch (error: any) {
-                if (error.code === 4902) {
-                    await window.ethereum.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [{
-                            chainId: '0x98a',
-                            chainName: 'Polygon zkEVM Testnet',
-                            nativeCurrency: {
-                                name: 'ETH',
-                                symbol: 'ETH',
-                                decimals: 18
-                            },
-                            rpcUrls: ['https://polygonzkevm-cardona.g.alchemy.com/v2/vvgIB-JCS2RG7FrICV9Tss9JqiYk3xiV'],
-                            blockExplorerUrls: ['https://cardona-zkevm.polygonscan.com/']
-                        }]
-                    });
-                }
-                throw new Error('createProfile: switch network error');
-            }
-        }
+        const formData = new FormData();
+        formData.append('account', account);
+        formData.append('file', file);
+        formData.append('name', name);
+        formData.append('interests', interests.join(','));
+        formData.append('jobs', jobs.join(','));
+        formData.append('other', JSON.stringify(other));
 
-        const uri = await uploadToPinata(file, name, interests, jobs, other);
-
-        const gasEstimate = await contract.methods.mint(uri).estimateGas({ from: account });
-        const gasPrice = await web3.eth.getGasPrice();
-        const result = await contract.methods.mint(uri).send({ 
-            from: account,
-            gas: Math.floor(Number(gasEstimate) * 1.2).toString(),
-            gasPrice: gasPrice.toString()
+        const response = await fetch(`${API_BASE_URL}/api/create-profile`, {
+            method: 'POST',
+            body: formData
         });
 
-        return result;
-    } catch (error: any) {
-        let errore = error.toString() 
-        if (errore.indexOf('Internal JSON-RPC error.') > -1) {
-            errore = errore.replace('\n', '').replace("Error: ", '').replace('Internal JSON-RPC error.', '')
-            errore = JSON.parse(errore)
+        if (!response.ok) {
+            throw new Error('프로필 생성 실패');
         }
-        throw new Error(`createProfile: ${errore}`);
+
+        const data = await response.json();
+        return data.result;
+    } catch (error) {
+        console.error('createProfile error:', error);
+        throw error;
     }
 };
 
-export const setProfile = async (account: any, file: File, name: string, interests: string, jobs: string, other: Array<{}>) => {
+export const setProfile = async (account: string, file: File, name: string, interests: string[], jobs: string[], other: any[]): Promise<any> => {
     try {
-        const uri = await uploadToPinata(file, name, interests, jobs, other);
-        const gasEstimate = await contract.methods.setNFT(uri).estimateGas({ from: account });
-        const gasPrice = await web3.eth.getGasPrice();
-        const result = await contract.methods.setNFT(uri).send({ 
-            from: account,
-            gas: Math.floor(Number(gasEstimate) * 1.2).toString(),
-            gasPrice: gasPrice.toString()
-        });
-        return result;
-    } catch (error: any) {
-        console.error('setProfile:', error);
-        throw error;
-    }
-}
+        const formData = new FormData();
+        formData.append('account', account);
+        formData.append('file', file);
+        formData.append('name', name);
+        formData.append('interests', interests.join(','));
+        formData.append('jobs', jobs.join(','));
+        formData.append('other', JSON.stringify(other));
 
-export const deleteProfile = async (account: any) => {
-    try {
-        const gasEstimate = await contract.methods.deleteNFT().estimateGas({ from: account });
-        const gasPrice = await web3.eth.getGasPrice();
-        const result = await contract.methods.deleteNFT().send({ 
-            from: account,
-            gas: Math.floor(Number(gasEstimate) * 1.2).toString(),
-            gasPrice: gasPrice.toString()
+        const response = await fetch(`${API_BASE_URL}/api/set-profile`, {
+            method: 'POST',
+            body: formData
         });
-        return result;
-    } catch (error: any) {
-        console.error('deleteProfile:', error);
+
+        if (!response.ok) {
+            throw new Error('프로필 수정 실패');
+        }
+
+        const data = await response.json();
+        return data.result;
+    } catch (error) {
+        console.error('setProfile error:', error);
         throw error;
     }
-}
+};
+
+export const deleteProfile = async (account: string): Promise<any> => {
+    try {
+        const formData = new FormData();
+        formData.append('account', account);
+
+        const response = await fetch(`${API_BASE_URL}/api/delete-profile`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('프로필 삭제 실패');
+        }
+
+        const data = await response.json();
+        return data.result;
+    } catch (error) {
+        console.error('deleteProfile error:', error);
+        throw error;
+    }
+};
 
 export const getProfile = async (account: string) => {
     try {
-        const isMinted = await contract.methods.isMinted().call({ from: account });
-        if (!isMinted) {
-            throw new Error('getProfile: isMinted false');
+        const formData = new FormData();
+        formData.append('account', account);
+
+        const response = await fetch(`${API_BASE_URL}/api/get-profile`, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+            headers: {
+                'Accept': 'multipart/form-data'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('프로필 조회 실패');
         }
 
-        const tokenId = await contract.methods.getTokenId().call({ from: account });
-        const hash = await contract.methods.tokenURI(tokenId).call();
-        const url = `https://gateway.pinata.cloud/ipfs/${hash}`;
-        const controller = new AbortController();
+        const data = await response.json();
+        return data.result;
+    } catch (error) {
+        console.error('getProfile error:', error);
+        throw error;
+    }
+};
 
-        try {
-            const response = await fetch(url, {
-                signal: controller.signal
-            });
-            
-            if (!response.ok) {
-                throw new Error(`getProfile response not ok: ${response.status}`);
-            }
+export const isProfileCreated = async (account: string): Promise<boolean> => {
+    try {
+        const formData = new FormData();
+        formData.append('account', account);
 
-            const metadataJson = await response.json();
+        const response = await fetch(`${API_BASE_URL}/api/is-profile-created`, {
+            method: 'POST',
+            body: formData
+        });
 
-            const name = metadataJson.attributes.find(attr => attr.trait_type === "Name")?.value;
-            const profileImage = metadataJson.attributes.find(attr => attr.trait_type === "Profile Image")?.value;
-            const interests = metadataJson.attributes.find(attr => attr.trait_type === "Interests")?.value.split(',') || [];
-            const jobs = metadataJson.attributes.find(attr => attr.trait_type === "Jobs")?.value.split(',') || [];
-
-            if (profileImage.length === 0 || name.length === 0 || interests.length === 0 || jobs.length === 0) {
-                throw new Error('getProfile: profileImage, name, interests, jobs is empty');
-            }
-
-            return {
-                profileImage: profileImage,
-                username: name,
-                interests: interests,
-                jobs: jobs
-            };
-        } catch (error: any) {
-            if (error.name === 'AbortError') {
-                throw new Error('getProfile: fetch timeout');
-            }
-            throw error;
+        if (!response.ok) {
+            throw new Error('프로필 존재 여부 확인 실패');
         }
-    } catch (error: any) {
-        console.error('getProfile:', error);
+
+        const data = await response.json();
+        return data.result;
+    } catch (error) {
+        console.error('isProfileCreated error:', error);
         throw error;
     }
-}
+};
 
-export const isProfileCreated = async (account: string) => {
+export const getTokenId = async (account: string): Promise<string> => {
     try {
-        const result = await contract.methods.isMinted().call({ from: account });
-        return result;
-    } catch (error: any) {
-        console.error('isProfileCreated:', error);
+        const formData = new FormData();
+        formData.append('account', account);
+
+        const response = await fetch(`${API_BASE_URL}/api/get-token-id`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('토큰 ID 조회 실패');
+        }
+
+        const data = await response.json();
+        return data.result;
+    } catch (error) {
+        console.error('getTokenId error:', error);
         throw error;
     }
-}
-
-export const getTokenId = async (account: string) => {
-    try {
-        const result = await contract.methods.getTokenId().call({ from: account });
-        return result;
-    } catch (error: any) {
-        console.error('getTokenId:', error);
-        throw error;
-    }
-}
-
+};

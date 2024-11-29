@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import CommonFooter from "@/components/common/footer/CommonFooter";
 import CommonHeader from "@/components/common/header/CommonHeader";
 import { setProfile, getProfile, isProfileCreated } from "../contract";
+import minusIcon from '/src/assets/icons/minus-solid.svg'
+import plusIcon from '/src/assets/icons/plus-solid.svg'
 
 const MakeProfile = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
@@ -11,9 +13,16 @@ const MakeProfile = () => {
   const [username, setUsername] = useState<string>("");
   const [interests, setInterests] = useState<string[]>([]);
   const [jobs, setJobs] = useState<string[]>([]);
-  const [account, setAccount] = useState<string | null>(JSON.parse(localStorage.getItem('account')));
+  const [account, setAccount] = useState<string | null>(null);
   const [hasProfile, setHasProfile] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const storedAccount = localStorage.getItem('account');
+    if (storedAccount) {
+      setAccount(JSON.parse(storedAccount));
+    }
+  }, []);
 
   useEffect(() => {
     const checkProfile = async () => {
@@ -21,8 +30,6 @@ const MakeProfile = () => {
         try {
           const result = await isProfileCreated(account);
           setHasProfile(Boolean(result));
-          console.log(hasProfile);
-          console.log(account);
         } catch (error: any) {
           console.error(error);
         }
@@ -66,6 +73,7 @@ const MakeProfile = () => {
     const file = e.target.files?.[0];
     if (file) {
       setProfileImage(file);
+      setProfileImageUrl(URL.createObjectURL(profileImage));
     }
   };
 
@@ -114,13 +122,14 @@ const MakeProfile = () => {
         throw new Error('최소 하나의 직업을 입력해야합니다.');
       }
 
-      await setProfile(account, profileImage, username, interests.join(','), jobs.join(','), []);
+      await setProfile(account, profileImage, username, interests, jobs, []);
       alert('프로필이 성공적으로 수정되었습니다!');
     } catch (error: any) {
-      console.error('프로필 수정 실패:', error);
+      console.error('handleSave:', error);
       alert(`프로필 수정에 실패했습니다: ${error.message}`);
     } finally {
-      setIsLoading(false); // 로딩 종료
+      setIsLoading(false);
+      URL.revokeObjectURL(profileImageUrl);
     }
   };
 
@@ -167,12 +176,12 @@ const MakeProfile = () => {
                       onChange={(e) => handleListChange(index, e.target.value, interests, setInterests)}
                     />
                     <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, interests, setInterests)}>
-                      <img src="/src/assets/icons/minus-solid.svg" alt="삭제" className={styles.profile_info_list_list_item_container_delete_button_image} />
+                      <img src={minusIcon} alt="삭제" className={styles.profile_info_list_list_item_container_delete_button_image} />
                     </button>
                   </div>
                 ))}
                 <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd(interests, setInterests)} disabled={interests.length >= 7}>
-                  <img src="/src/assets/icons/plus-solid.svg" alt="추가" className={styles.profile_info_list_list_add_button_image + (interests.length >= 7 ? " " + styles.profile_info_list_list_add_button_image_disabled : "")} />
+                  <img src={plusIcon} alt="추가" className={styles.profile_info_list_list_add_button_image + (interests.length >= 7 ? " " + styles.profile_info_list_list_add_button_image_disabled : "")} />
                 </button>
               </div>
             </div>
@@ -185,12 +194,12 @@ const MakeProfile = () => {
                   <div className={styles.profile_info_list_list_item_container} key={index}>
                     <input type="text" className={styles.profile_info_list_list_item_container_item} value={job} onChange={(e) => handleListChange(index, e.target.value, jobs, setJobs)} />
                     <button className={styles.profile_info_list_list_item_container_delete_button} onClick={() => handleListDelete(index, jobs, setJobs)}>
-                      <img src="/src/assets/icons/minus-solid.svg" alt="삭제" className={styles.profile_info_list_list_item_container_delete_button_image} />
+                      <img src={minusIcon} alt="삭제" className={styles.profile_info_list_list_item_container_delete_button_image} />
                     </button>
                   </div>
                 ))}
                 <button className={styles.profile_info_list_list_add_button} onClick={() => handleListAdd(jobs, setJobs)} disabled={jobs.length >= 3}>
-                  <img src="/src/assets/icons/plus-solid.svg" alt="추가" className={styles.profile_info_list_list_add_button_image + (jobs.length >= 3 ? " " + styles.profile_info_list_list_add_button_image_disabled : "")} />
+                  <img src={plusIcon} alt="추가" className={styles.profile_info_list_list_add_button_image + (jobs.length >= 3 ? " " + styles.profile_info_list_list_add_button_image_disabled : "")} />
                 </button>
               </div>
             </div>

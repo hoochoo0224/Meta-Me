@@ -3,7 +3,6 @@ import { useRef, useState, useEffect } from 'react'
 import ProfileCard from './components/ProfileCard'
 import CommonFooter from '@/components/common/footer/CommonFooter';
 import CommonHeader from '@/components/common/header/CommonHeader';
-import DownloadButton from './components/DownloadButton';
 import ConnectToMetamaskButton from './components/ConnectToMetamaskButton';
 import { isProfileCreated } from '../contract';
 import { Link } from 'react-router-dom';
@@ -42,9 +41,6 @@ function index() {
               <div className={styles.container_middle}>
                 <ProfileCard ref={profileCardRef} account={account} hasProfile={hasProfile} />
               </div>
-              <div className={styles.container_bottom}>
-                <DownloadButton profileCardRef={profileCardRef} />
-              </div>
             </>
           ) : (
             <div className={styles.container_middle}>
@@ -54,7 +50,7 @@ function index() {
           )
       ) : (
         <>
-          <div className={styles.container_bottom}>
+          <div className={styles.container_middle}>
             <ConnectToMetamaskButton setAccount={setAccount} />
           </div>
         </>

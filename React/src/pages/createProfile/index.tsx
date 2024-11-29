@@ -42,7 +42,7 @@ export default function CreateProfilePage() {
             } else if (jobs.split(',').length > 3) {
                 throw new Error('직업은 최대 3개까지 입력할 수 있습니다.');
             }
-            await createProfile(account, file, name, interests, jobs, []);
+            await createProfile(account, file, name, interests.split(","), jobs.split(","), []);
         } catch (error: any) {
             console.error(error);
             alert(error.message);

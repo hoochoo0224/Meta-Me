@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { contractAddress, deleteProfile, getTokenId, isProfileCreated } from '../contract';
 import { Link } from 'react-router-dom';
+import copyIcon from '/src/assets/icons/copy-solid.svg'
 
 export default function SettingsPage() {
   const [tokenId, setTokenId] = useState<string>('');
@@ -41,7 +42,7 @@ export default function SettingsPage() {
       if (account && hasProfile) {
         try {
           const result = await getTokenId(account);
-          setTokenId(Boolean(result).toString());
+          setTokenId(Number(result).toString());
         } catch (error) {
           console.error('토큰 ID 가져오기 실패:', error);
         }
@@ -75,8 +76,8 @@ export default function SettingsPage() {
             <CommonHeader account={account} setAccount={setAccount} />
             {hasProfile ? (
                 <>
-                    <span className={styles.container_text}>컨트랙트 주소:<br />{contractAddress}<button className={styles.container_text_copy} onClick={() => copyToClipboard(contractAddress)}><img src="/src/assets/icons/copy-solid.svg" alt="복사" className={styles.container_text_copy_icon} /></button></span>
-                    <span className={styles.container_text}>토큰 아이디: {tokenId}<button className={styles.container_text_copy} onClick={() => copyToClipboard(tokenId)}><img src="/src/assets/icons/copy-solid.svg" alt="복사" className={styles.container_text_copy_icon} /></button></span>
+                    <span className={styles.container_text}>컨트랙트 주소:<br />{contractAddress}<button className={styles.container_text_copy} onClick={() => copyToClipboard(contractAddress)}><img src={copyIcon} alt="복사" className={styles.container_text_copy_icon} /></button></span>
+                    <span className={styles.container_text}>토큰 아이디: {tokenId}<button className={styles.container_text_copy} onClick={() => copyToClipboard(tokenId)}><img src={copyIcon} alt="복사" className={styles.container_text_copy_icon} /></button></span>
                     <button 
                         className={`${styles.container_button} ${styles.container_button_delete}`}
                         onClick={handleDeleteProfile}

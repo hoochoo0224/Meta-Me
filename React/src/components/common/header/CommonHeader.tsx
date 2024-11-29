@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import styles from './CommonHeader.module.scss'
+import logoIcon from '/src/assets/icons/hive-brands-solid.svg'
 
 const CommonHeader = (props: { account: string | null, setAccount: (account: string | null) => void }) => {
     useEffect(() => {
@@ -37,7 +38,7 @@ const CommonHeader = (props: { account: string | null, setAccount: (account: str
     
     return (
         <header className={styles.header}>
-            <img src="/src/assets/icons/hive-brands-solid.svg" alt="" className={styles.header_logo} />
+            <img src={logoIcon} alt="" className={styles.header_logo} />
             <span className={styles.header_title}>Meta Me</span>
         </header>
     )
