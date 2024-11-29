@@ -1,23 +1,63 @@
+$mobile: 480px;
+$tablet: 768px;
+$desktop: 1024px;
+
 .header {
-    height: 40px;
+    height: 35px;
+    position: relative;
+    margin-bottom: 10px;
+
+    @media screen and (min-width: $tablet) {
+        height: 40px;
+        margin-bottom: 15px;
+    }
+
+    @media screen and (min-width: $desktop) {
+        height: 45px;
+        margin-bottom: 20px;
+    }
 
     &_logo {
         position: absolute;
-        margin: 8px;
+        margin: 6px;
         top: 0;
         left: 0;
-        width: 25px;
-        height: 25px;
+        width: 22px;
+        height: 22px;
+
+        @media screen and (min-width: $tablet) {
+            margin: 8px;
+            width: 25px;
+            height: 25px;
+        }
+
+        @media screen and (min-width: $desktop) {
+            margin: 10px;
+            width: 28px;
+            height: 28px;
+        }
     }
 
     &_title {
         position: absolute;
         top: 0;
         left: 0;
-        margin-top: 9px;
-        margin-left: 38px;
+        margin-top: 7px;
+        margin-left: 34px;
         font-family: 'Noto Sans KR', sans-serif;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 700;
+
+        @media screen and (min-width: $tablet) {
+            margin-top: 9px;
+            margin-left: 38px;
+            font-size: 16px;
+        }
+
+        @media screen and (min-width: $desktop) {
+            margin-top: 11px;
+            margin-left: 44px;
+            font-size: 18px;
+        }
     }
 }

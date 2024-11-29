@@ -85,19 +85,21 @@ export const getProfile = async (account: string) => {
 
         const response = await fetch(`${API_BASE_URL}/api/get-profile`, {
             method: 'POST',
-            body: formData,
-            credentials: 'include',
-            headers: {
-                'Accept': 'multipart/form-data'
-            }
+            body: formData
         });
-
+        
         if (!response.ok) {
             throw new Error('프로필 조회 실패');
         }
-
+        
         const data = await response.json();
-        return data.result;
+        const attributes = data.result.attributes;
+            return {
+                profileImage: attributes.find(attr => attr.trait_type === "Profile Image")?.value,
+                username: attributes.find(attr => attr.trait_type === "Name")?.value,
+                interests: attributes.find(attr => attr.trait_type === "Interests")?.value.split(','),
+                jobs: attributes.find(attr => attr.trait_type === "Jobs")?.value.split(',')
+            };
     } catch (error) {
         console.error('getProfile error:', error);
         throw error;

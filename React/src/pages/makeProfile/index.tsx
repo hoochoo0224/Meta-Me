@@ -16,6 +16,7 @@ const MakeProfile = () => {
   const [account, setAccount] = useState<string | null>(null);
   const [hasProfile, setHasProfile] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingProfile, setIsLoadingProfile] = useState<boolean>(false);
 
   useEffect(() => {
     const storedAccount = localStorage.getItem('account');
@@ -42,6 +43,7 @@ const MakeProfile = () => {
   useEffect(() => {
     const loadProfile = async () => {
       try {
+        setIsLoadingProfile(true);
         const profile = await getProfile(account);
 
         if (profile.profileImage) {
@@ -59,6 +61,8 @@ const MakeProfile = () => {
         if (profile.jobs) setJobs(profile.jobs);
       } catch (error: any) {
         console.error('프로필 로드 실패:', error);
+      } finally {
+        setIsLoadingProfile(false);
       }
     };
     
@@ -114,12 +118,12 @@ const MakeProfile = () => {
         throw new Error('이름을 입력해주세요.');
       }
 
-      if (interests.length === 0) {
-        throw new Error('최소 하나의 관심 분야를 입력해야합니다.');
+      if (interests.length === 0 || interests.some(i => !i.trim())) {
+        throw new Error('관심 분야 칸을 제대로 입력해주세요.');
       }
 
-      if (jobs.length === 0) {
-        throw new Error('최소 하나의 직업을 입력해야합니다.');
+      if (jobs.length === 0 || jobs.some(j => !j.trim())) {
+        throw new Error('직업 칸을 제대로 입력해주세요.');
       }
 
       await setProfile(account, profileImage, username, interests, jobs, []);
@@ -138,6 +142,12 @@ const MakeProfile = () => {
       <CommonHeader account={account} setAccount={setAccount} />
       {hasProfile ? (
         <div className={styles.container_middle}>
+          {isLoadingProfile && (
+            <div className={styles.loading_overlay}>
+              <div className={styles.loading_spinner}></div>
+              <p className={styles.loading_text}>프로필을 불러오는 중입니다...</p>
+            </div>
+          )}
           {isLoading && (
             <div className={styles.loading_overlay}>
               <div className={styles.loading_spinner}></div>
