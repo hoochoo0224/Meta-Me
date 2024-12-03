@@ -1,40 +1,24 @@
-$mobile: 480px;
-$tablet: 768px;
-$desktop: 1024px;
+@import '../../../styles/variables';
 
 .header {
-    height: 35px;
-    position: relative;
-    margin-bottom: 10px;
-
-    @media screen and (min-width: $tablet) {
-        height: 40px;
-        margin-bottom: 15px;
-    }
-
-    @media screen and (min-width: $desktop) {
-        height: 45px;
-        margin-bottom: 20px;
-    }
+    height: 40px;
 
     &_logo {
         position: absolute;
-        margin: 6px;
+        margin: 8px;
         top: 0;
         left: 0;
         width: 22px;
         height: 22px;
 
         @media screen and (min-width: $tablet) {
-            margin: 8px;
-            width: 25px;
-            height: 25px;
+            width: 24px;
+            height: 24px;
         }
 
         @media screen and (min-width: $desktop) {
-            margin: 10px;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
         }
     }
 
@@ -42,22 +26,18 @@ $desktop: 1024px;
         position: absolute;
         top: 0;
         left: 0;
-        margin-top: 7px;
-        margin-left: 34px;
+        margin-top: 9px;
+        margin-left: 38px;
         font-family: 'Noto Sans KR', sans-serif;
-        font-size: 14px;
+        font-size: $font-medium-mobile;
         font-weight: 700;
 
         @media screen and (min-width: $tablet) {
-            margin-top: 9px;
-            margin-left: 38px;
-            font-size: 16px;
+            font-size: $font-medium-tablet;
         }
 
         @media screen and (min-width: $desktop) {
-            margin-top: 11px;
-            margin-left: 44px;
-            font-size: 18px;
+            font-size: $font-medium-desktop;
         }
     }
 }

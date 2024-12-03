@@ -1,6 +1,4 @@
-$mobile: 480px;
-$tablet: 768px;
-$desktop: 1024px;
+@import '../../../styles/variables';
 
 .footer {
     position: fixed;
@@ -17,26 +15,24 @@ $desktop: 1024px;
     width: 100vw;
     box-sizing: border-box;
     height: 45px;
-    padding: 0 16px;
+    padding: 0 $spacing-medium-mobile;
     
     background-color: #ffffff;
     box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1);
 
     @media screen and (min-width: $tablet) {
         height: 50px;
-        padding: 0 24px;
+        padding: 0 $spacing-medium-tablet;
     }
 
     @media screen and (min-width: $desktop) {
         height: 55px;
-        padding: 0 32px;
+        padding: 0 $spacing-medium-desktop;
     }
     
     &_icon {
         width: 20px;
         height: 20px;
-        opacity: 0.7;
-        transition: all 0.2s ease;
 
         @media screen and (min-width: $tablet) {
             width: 22px;
@@ -46,11 +42,6 @@ $desktop: 1024px;
         @media screen and (min-width: $desktop) {
             width: 24px;
             height: 24px;
-            
-            &:hover {
-                opacity: 1;
-                transform: scale(1.1);
-            }
         }
     }
 }

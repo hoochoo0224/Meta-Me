@@ -6,8 +6,6 @@ const multer = require('multer');
 const sqlite3 = require("sqlite3");
 const Web3 = require('web3');
 const _abi = require('./MakeNFT2.json');
-const { ethers } = require("ethers");
-const { Network, Alchemy, Wallet, ContractFactory } = require("alchemy-sdk");
 
 const app = express();
 const upload = multer();
@@ -18,13 +16,11 @@ const db = new sqlite3.Database("./uris.db", err => {
         return console.error(err.message);
     }
     
-    // 기존 테이블 구조 확인 후 필요한 컬럼 추가
     db.run(`CREATE TABLE IF NOT EXISTS URIs (ID INTEGER, JsonCID TEXT)`, err => {
         if (err) {
             return console.error(err.message);
         }
         
-        // ImgCID 컬럼 추가
         db.run(`ALTER TABLE URIs ADD COLUMN ImgCID TEXT`, err => {
             if (err && !err.message.includes('duplicate column name')) {
                 return console.error(err.message);
@@ -35,7 +31,7 @@ const db = new sqlite3.Database("./uris.db", err => {
 
 // CORS 설정
 app.use(cors({
-    origin: [process.env.ALLOWED_ORIGIN],
+    origin: [process.env.ALLOWED_ORIGIN, process.env.ALLOWED_ORIGIN2],
     credentials: true,
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -45,7 +41,7 @@ app.use(express.json());
 
 // Web3 & Contract 설정
 const web3 = new Web3.Web3(`https://polygonzkevm-cardona.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`);
-const contractAddress = '0x59651fE3e72ADa6Ce1ba633A20f83d058e3350E7';
+const contractAddress = '0x849dc0b1568b03fab4FD7188a3C53309f4Ac1349';
 const contract = new web3.eth.Contract(_abi.abi, contractAddress);
 const signer = web3.eth.accounts.privateKeyToAccount(process.env.PRIVATE_KEY);
 web3.eth.accounts.wallet.add(signer);
@@ -92,13 +88,6 @@ async function uploadToPinata(fileBuffer, name, interests, jobs, other, tokenId)
                 if (err) reject(err);
                 resolve();
             });
-            // db.run(`INSERT INTO URIs (ID, ImgCID, JsonCID) VALUES (?, ?, ?)`, 
-            //     [tokenId, uploadImage.IpfsHash, uploadMetadata.IpfsHash], 
-            //     err => {
-            //         if (err) reject(err);
-            //         resolve();
-            //     }
-            // );
         });
 
         return uploadMetadata.IpfsHash;
@@ -113,19 +102,14 @@ async function deletePinataFile(tokenId) {
         // DB에서 CID 조회
         const data = await new Promise((resolve, reject) => {
             const select = db.prepare('SELECT ImgCID, JsonCID FROM URIs WHERE ID = ?');
-            select.run(tokenId, (err, row) => {
-                if (err) reject(err);
-                if (!row) reject(new Error('Token ID not found'));
-                resolve(row);
-            });
-            // db.get(`SELECT ImgCID, JsonCID FROM URIs WHERE ID = ?`, [tokenId], (err, row) => {
-            //     if (err) reject(err);
-            //     if (!row) reject(new Error('Token ID not found'));
-            //     resolve(row);
-            // });
+            console.log(tokenId)
+            resolve(select.get(tokenId));
         });
 
         // Pinata에서 파일 삭제
+        console.log(data);
+        console.log(data.ImgCID);
+        console.log(data.JsonCID);
         await pinata.unpin([data.ImgCID, data.JsonCID]);
 
         // DB에서 레코드 삭제
@@ -135,10 +119,6 @@ async function deletePinataFile(tokenId) {
                 if (err) reject(err);
                 resolve();
             });
-            // db.run(`DELETE FROM URIs WHERE ID = ?`, [tokenId], err => {
-            //     if (err) reject(err);
-            //     resolve();
-            // });
         });
 
         return true;
@@ -151,20 +131,15 @@ async function deletePinataFile(tokenId) {
 const sendTransact = async (method, params) => {
     const gasPrice = await web3.eth.getGasPrice();
     var tx = {from : signer.address, to : contractAddress , gas : 500000, gasPrice : gasPrice, data : method(...params).encodeABI()};
-    var signPromise = web3.eth.accounts.signTransaction(tx, signer.privateKey);
-    signPromise.then((signedTx)=> {
-        var sentTx = web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction);
-        return sentTx;
-    })
-
+    // var signPromise = await web3.eth.accounts.signTransaction(tx, signer.privateKey);
+    // signPromise.then((signedTx)=> {
+        //     var sentTx = web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction);
+        //     return sentTx;
+        // });
+    var signedTx = await web3.eth.accounts.signTransaction(tx, signer.privateKey);
+    var sentTx = await web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction);
+    return sentTx;
 }
-const safeJsonStringify = (obj) => {
-    return JSON.stringify(obj, (_, value) =>
-        typeof value === 'bigint'
-            ? value.toString()
-            : value
-    );
-};
 
 app.post('/api/create-profile', upload.single('file'), async (req, res) => {
     try {
@@ -174,17 +149,20 @@ app.post('/api/create-profile', upload.single('file'), async (req, res) => {
         const uri = await uploadToPinata(fileBuffer, name, interests, jobs, JSON.parse(other), -1);
         
         const result = await sendTransact(contract.methods.mint, [account, uri]);
-        const serializedResult = JSON.parse(safeJsonStringify(result));
         
         if (result.status) {
-            const tokenId = await contract.methods.getTokenId(userAccount).call({ from: signer.address });
-            await db.run(`UPDATE URIs SET ID = ? WHERE JsonCID = ?`, [tokenId, uri]);
+            const tokenId = await contract.methods.getTokenId(account).call({ from: signer.address });
+            await new Promise((resolve, reject) => {
+                const update = db.prepare("UPDATE URIs SET ID = ? WHERE JsonCID = ?");
+                update.run(tokenId, uri, err => {
+                    if (err) reject(err);
+                    resolve();
+                });
+            });
         }
-        
-        res.setHeader('Content-Type', 'application/json');
 
         res.json({
-            result: serializedResult
+            result: true
         });
     } catch (error) {
         console.error("Create profile error:", error);
@@ -202,15 +180,12 @@ app.post('/api/set-profile', upload.single('file'), async (req, res) => {
         const tokenId = await contract.methods.getTokenId(account).call({ from: signer.address });
         await deletePinataFile(Number(tokenId));
         
-        const uri = await uploadToPinata(fileBuffer, name, interests, jobs, JSON.parse(other), tokenId);
+        const uri = await uploadToPinata(fileBuffer, name, interests, jobs, JSON.parse(other), Number(tokenId));
         
-        const result = await sendTransact(contract.methods.setNFT, [account, uri]);
-        const serializedResult = JSON.parse(safeJsonStringify(result));
-        
-        res.setHeader('Content-Type', 'application/json');
+        await sendTransact(contract.methods.setNFT, [account, uri]);
 
         res.json({
-            result: serializedResult
+            result: true
         });
     } catch (error) {
         console.error("Set profile error:", error);
@@ -224,13 +199,10 @@ app.post('/api/delete-profile', upload.none(), async (req, res) => {
         const tokenId = await contract.methods.getTokenId(account).call({ from: signer.address });
         await deletePinataFile(Number(tokenId));
         
-        const result = await sendTransact(contract.methods.deleteNFT, [account]);
-        const serializedResult = JSON.parse(safeJsonStringify(result));
-        
-        res.setHeader('Content-Type', 'application/json');
+        await sendTransact(contract.methods.deleteNFT, [account]);
 
         res.json({
-            result: serializedResult
+            result: true
         });
         res.json({ result: result });
     } catch (error) {
@@ -242,8 +214,7 @@ app.post('/api/delete-profile', upload.none(), async (req, res) => {
 app.post('/api/get-profile', upload.none(), async (req, res) => {
     try {
         const { account } = req.body;
-        const tokenId = await contract.methods.getTokenId(account).call({ from: signer.address });
-        const hash = await contract.methods.tokenURI(tokenId).call();
+        const hash = await contract.methods.getProfile(account).call();
         
         const response = await fetch(`https://gateway.pinata.cloud/ipfs/${hash}`);
         const profile = await response.json();

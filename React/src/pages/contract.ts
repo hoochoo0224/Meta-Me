@@ -1,5 +1,3 @@
-export const contractAddress = '0x59651fE3e72ADa6Ce1ba633A20f83d058e3350E7';
-
 const API_BASE_URL = 'https://port-0-meta-me-api-m3x1zrsv043003ce.sel4.cloudtype.app';
 
 export const createProfile = async (account: string, file: File, name: string, interests: string[], jobs: string[], other: any[]): Promise<any> => {

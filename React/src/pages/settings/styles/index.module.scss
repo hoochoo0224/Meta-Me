@@ -1,106 +1,146 @@
-$mobile: 480px;
-$tablet: 768px;
-$desktop: 1024px;
+$HEADER_HEIGHT: 60px;
+$FOOTER_HEIGHT: 60px;
+$NAV_HEIGHT: 60px;
 
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    
     min-height: 100vh;
     padding: 16px 14px;
     margin: 0;
+    
     row-gap: 24px;
 
-    @media screen and (min-width: $tablet) {
-        padding: 24px 32px;
-        row-gap: 32px;
-    }
-
-    @media screen and (min-width: $desktop) {
-        padding: 32px 48px;
-        row-gap: 40px;
-    }
-
     &_text {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+
         font-size: 0.9rem;
+        font-weight: 500;
+        text-align: left;
         padding: 8px 14px;
+        background-color: #f8f9fa;
+        border-radius: 14px;
         width: 90%;
-        max-width: 280px;
-
-        @media screen and (min-width: $tablet) {
-            font-size: 1rem;
-            padding: 10px 16px;
-            max-width: 320px;
-        }
-
-        @media screen and (min-width: $desktop) {
-            font-size: 1.1rem;
-            padding: 12px 18px;
-            max-width: 360px;
+        max-width: 320px;
+        color: #495057;
+        letter-spacing: -0.3px;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        gap: 8px;
+        
+        word-break: keep-all;
+        word-wrap: break-word;
+        white-space: pre-wrap;
+        
+        &:empty {
+            display: none;
         }
 
         &_copy {
-            width: 32px;
-            height: 32px;
-
-            @media screen and (min-width: $tablet) {
-                width: 36px;
-                height: 36px;
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            padding: 8px;
+            border: none;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.03);
+            cursor: pointer;
+            
+            @media (hover: hover) {
+                background-color: transparent;
+                transition: all 0.2s ease;
+                
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.05);
+                }
             }
 
-            @media screen and (min-width: $desktop) {
-                width: 40px;
-                height: 40px;
+            &:active {
+                background-color: rgba(0, 0, 0, 0.1);
+                transform: scale(0.95);
             }
 
             &_icon {
-                width: 16px;
-                height: 16px;
+                width: 18px;
+                height: 18px;
+                opacity: 0.6;
+                transition: opacity 0.2s ease;
+            }
 
-                @media screen and (min-width: $tablet) {
-                    width: 18px;
-                    height: 18px;
+            @media (hover: hover) {
+                &:hover &_icon {
+                    opacity: 0.7;
                 }
+            }
 
-                @media screen and (min-width: $desktop) {
-                    width: 20px;
-                    height: 20px;
-                }
+            &:active &_icon {
+                opacity: 0.9;
             }
         }
     }
 
     &_button {
         width: 90%;
-        max-width: 280px;
+        max-width: 320px;
+        padding: 12px 20px;
         font-size: 0.9rem;
-        padding: 10px 16px;
-
-        @media screen and (min-width: $tablet) {
-            max-width: 320px;
-            font-size: 1rem;
-            padding: 12px 20px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        
+        &_logout {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            
+            &:hover {
+                background-color: #357abd;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+            }
+        }
+        
+        &_delete {
+            background-color: white;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+            
+            &:hover {
+                background-color: #e74c3c;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+            }
         }
 
-        @media screen and (min-width: $desktop) {
-            max-width: 360px;
-            font-size: 1.1rem;
-            padding: 14px 24px;
+        @media (hover: none) {
+            &:hover {
+                transform: none;
+                box-shadow: none;
+            }
         }
     }
 
     &_middle {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        row-gap: 16px;
+        
         &_text {
-            font-size: 1.1rem;
-
-            @media screen and (min-width: $tablet) {
-                font-size: 1.3rem;
-            }
-
-            @media screen and (min-width: $desktop) {
-                font-size: 1.5rem;
-            }
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.2;
         }
     }
 }

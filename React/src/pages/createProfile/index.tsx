@@ -20,9 +20,6 @@ export default function CreateProfilePage() {
     const handleSubmit = async () => {
         setIsLoading(true);
         try {
-            if (!window.ethereum) {
-                throw new Error('메타마스크가 설치되어 있지 않습니다.');
-            }
             if (!account) {
                 throw new Error('메타마스크 연결 후 다시 시도해 주세요.');
             }

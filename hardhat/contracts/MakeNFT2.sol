@@ -34,6 +34,11 @@ contract MakeNFT2 is ERC721URIStorage, Ownable {
         delete userTokenIds[addr];
         _burn(userTokenId);
     }
+    
+    function getProfile(address addr) public view onlyOwner returns (string memory) {
+        require(balanceOf(addr) > 0, "User doesn't have a Profile NFT");
+        return tokenURI(userTokenIds[addr]);
+    }
 
     function isMinted(address addr) public view onlyOwner returns (bool) {
         return (balanceOf(addr) > 0);
@@ -49,4 +54,5 @@ contract MakeNFT2 is ERC721URIStorage, Ownable {
     function tokenExists(uint256 _tokenId) public view onlyOwner returns (bool) {
         return _ownerOf(_tokenId) != address(0);
     }
+
 }
